@@ -1,0 +1,32 @@
+# Virtual Environments
+venv/
+env/
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# System Files
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
+
+# Executables
+*.exe
+
+# Datasets
+*.csv
+
+# Model Files (Often large, best to exclude unless small)
+*.pkl
+
+# Other potentially unwanted files
+*.bak
+*.tmp

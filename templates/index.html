@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection Sentinel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="shield-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1>Sentinel<span>AI</span></h1>
+            </div>
+            <div class="status-indicator">
+                <span class="pulse"></span>
+                <span id="system-status">System Initializing...</span>
+            </div>
+        </header>
+
+        <main class="glass-panel">
+            <div class="panel-header" style="display:flex; justify-content: space-between; align-items:flex-end">
+                <div>
+                    <h2>Transaction Analysis</h2>
+                    <p>Pulling secure data directly from balanced_creditcard.csv.</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="number" id="manual-tx-id" placeholder="ID (e.g. 42)" class="secondary-btn" style="width: 120px; outline:none;" min="0">
+                    <button id="fetch-tx-btn" class="secondary-btn">Fetch UI</button>
+                    <button id="fetch-random-btn" class="secondary-btn" style="background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;">🎲 Random</button>
+                </div>
+            </div>
+
+            <div id="tx-info-container" class="hidden">
+                <div class="tx-badge">Transaction ID: <span id="tx-id-display"></span></div>
+                <span style="font-size:0.8rem; color:var(--text-secondary); margin-left:10px;">(Actual Label: <span id="actual-class-display"></span>)</span>
+            </div>
+
+            <form id="prediction-form">
+                <!-- Our 10 selected features will be displayed here -->
+                <div class="feature-grid">
+                    <div class="f-item">
+                        <label>Distance from Home</label>
+                        <input type="text" id="distance_from_home" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Time Since Last TX</label>
+                        <input type="text" id="time_since_last_tx" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Amount</label>
+                        <input type="text" id="Amount" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Email Domain Risk</label>
+                        <input type="text" id="email_domain_risk" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Location City (V1)</label>
+                        <input type="text" id="location_city" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Device Type (V3)</label>
+                        <input type="text" id="device_type" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>User Risk Score (V24)</label>
+                        <input type="text" id="user_risk_score" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Merchant Category</label>
+                        <input type="text" id="merchant_category" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Daily TX Amount</label>
+                        <input type="text" id="daily_tx_amount" readonly>
+                    </div>
+                    <div class="f-item">
+                        <label>Contactless Used</label>
+                        <input type="text" id="contactless_used" readonly>
+                    </div>
+                </div>
+
+                <div class="input-group model-selection pt-4">
+                    <label>Inference Engine</label>
+                    <div class="radio-group">
+                        <label class="radio-card selected">
+                            <input type="radio" name="model" value="rf" checked>
+                            <span class="card-content">
+                                <strong>Random Forest</strong>
+                                <span>High Accuracy • Complex</span>
+                            </span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="model" value="lr">
+                            <span class="card-content">
+                                <strong>Logistic Regression</strong>
+                                <span>Fast Inference • Interpretable</span>
+                            </span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="model" value="knn">
+                            <span class="card-content">
+                                <strong>K-Nearest Neighbors</strong>
+                                <span>Proximity-based • Distance</span>
+                            </span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="model" value="stacking">
+                            <span class="card-content">
+                                <strong>Stacking Ensemble</strong>
+                                <span>Combined Truth • Ultimate</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="analyze-btn" disabled>
+                    <span>Analyze Transaction</span>
+                    <div class="spinner loader-hidden"></div>
+                </button>
+            </form>
+        </main>
+
+        <div class="result-panel glass-panel hidden" id="result-container">
+            <div class="result-header">
+                <h3>Analysis Result</h3>
+                <button id="close-result" class="close-btn">&times;</button>
+            </div>
+            
+            <div class="result-content" id="result-box">
+                <div class="gauge-container">
+                    <svg class="circular-progress" viewBox="0 0 100 100">
+                        <circle class="bg" cx="50" cy="50" r="45"></circle>
+                        <circle class="progress" id="probability-ring" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div class="probability-text">
+                        <span id="prob-value">0%</span>
+                        <span class="prob-label">Risk</span>
+                    </div>
+                </div>
+                <div class="result-details">
+                    <div class="classification" id="classification-badge">LEGITIMATE</div>
+                    <p class="insight" id="insight-text">Transaction patterns align with standard user behavior.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
