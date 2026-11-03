@@ -212,6 +212,7 @@ This project is intended for educational and research purposes. It is not a prod
 
 - GitHub: [sp1303](https://github.com/sp1303)
 - LinkedIn: [Shatakshi Pandiya](https://www.linkedin.com/in/shatakshi-pandiya-5bb4513a6/)
+- LIVE: [https://an-ensemble-learning-approach-for-f.vercel.app/]
 
 ---
 
